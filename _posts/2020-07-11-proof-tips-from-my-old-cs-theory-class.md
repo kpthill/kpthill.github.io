@@ -1,6 +1,7 @@
 ---
 layout: post
 title:  "Proof Tips from my Old CS Theory Class"
+tags:   math
 ---
 
 Back in the early 20-teens I was a TA for CS103, Stanford's introduction to CS theory. For many of the students it was their first introduction to proof-based mathematics. We started off with an introduction to propositional logic, with two-column proofs and very explicit rules about how everything was supposed to work.
@@ -57,7 +58,7 @@ Therefore x divides y.
 
 Now we still haven’t done anything interesting - we are just chasing definitions.  But looking over the proof skeleton, it is pretty easy to guess that $$ x = 1 $$ and $$ n = y $$, so we can fill in the blanks:
 
-_Proof_ 
+_Proof_
 
 Pick $$ x=1 $$, so $$ x \in \mathbb{N} $$.  Let $$ y \in \mathbb{N} $$. Pick $$ n = y $$, and hence $$ n \in \mathbb{N} $$ as well.  Then
 
@@ -65,7 +66,7 @@ $$n*x=y*1=y$$,
 
 so x divides y, as desired.
 
-That’s a good proof!  Even though we had 2 existential generalizations and 1 universal generalization to do, and a lot of things to prove, the result came out very concise because we focused on the things that are central to the proof - letting and picking variables and showing that the values we chose satisfy the definition.  
+That’s a good proof!  Even though we had 2 existential generalizations and 1 universal generalization to do, and a lot of things to prove, the result came out very concise because we focused on the things that are central to the proof - letting and picking variables and showing that the values we chose satisfy the definition.
 
 In trying to find your own proofs, the strategy above is something that you can do on any problem - first break down the definitions and figure out what sort of variables the definitions are forcing you to adopt, and then try to fill in that proof skeleton.  Often, just spelling out the definitions this way will make it obvious what you have to do to prove it!
 
