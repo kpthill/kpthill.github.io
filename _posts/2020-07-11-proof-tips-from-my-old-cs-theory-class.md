@@ -28,7 +28,7 @@ _Theorem 1_ There is some positive number which divides every positive number.
 
 By writing this in the language of formal logic, we can get a sense of how our proof should look:
 
-_Theorem 1_ $$ \forall x \in \mathbb{N} \exists y \in \mathbb{N} s.t. x \vert y $$
+_Theorem 1_ $$ \exists x \in \mathbb{N} s.t. \forall y \in \mathbb{N} s.t. x \vert y $$
 
 “There exists a natural number x such that for every natural number y, x divides y.”
 
