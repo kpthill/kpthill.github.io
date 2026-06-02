@@ -21,7 +21,8 @@ Dodo is a Lisp. Function calls are made by putting the function and its argument
 ```
 
 ```
-(defn pythag (a b) (+ (* a a) (* b b)))
+(defn square (x) (* x x))
+(defn pythag (a b) (+ (square a) (square b)))
 (pythag 3 4) ;; => 25
 ```
 
@@ -68,13 +69,3 @@ You can also use a `when` clause to filter based on bound variables or anything 
 ## Takeaways
 
 You can just write a programming language. Lexer, parser, grammar, interpreter, compiler — do whatever you find interesting and most of the rest is optional or has a library. Learn from the experience and start seeing the skeleton underneath the tools you use every day.
-
-(CLAUDE: create a new post for this "learning with ai" section. Do not move or edit this part of the outline in any way - I'll move it over to preserve git history)
-  - do learning with ai
-    - lots of people don't like making things with ai
-    - but you can ask it to just not help you with parts of it
-    - for this project the `impl/` directory is ai free, with instructions to never edit anything there
-    - but ai did write a spec (based on my instruction), write tests and
-      examples, manage a todo list, and write a nice browser based repl
-      - it's like a school assignment, in that all the supporting code is
-        handled for you and the goals are clearly spelled out
