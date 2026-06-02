@@ -33,6 +33,11 @@ theme: minima
 plugins:
   - jekyll-feed
 
+# Suppress Dart Sass deprecation warnings that come from the minima gem.
+# These are not our code to fix; remove this once minima releases a Sass 3.0-compatible version.
+sass:
+  quiet_deps: true
+
 # Exclude from processing.
 # The following items will not be processed, by default.
 # Any item listed under the `exclude:` key here will be automatically added to
@@ -52,3 +57,13 @@ plugins:
 #   - vendor/cache/
 #   - vendor/gems/
 #   - vendor/ruby/
+
+# Submodule whitelisting: exclude the entire dodo submodule, then re-include
+# only the files we want served. `include:` overrides `exclude:`.
+exclude:
+  - dodo
+  - AGENTS.md
+
+include:
+  - dodo/repl.html
+  - dodo/spec.html
