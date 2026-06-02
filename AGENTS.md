@@ -43,18 +43,18 @@ Drafts go in `_drafts/` with no date in the filename; they only appear when serv
 
 Use a **git submodule** pointing at the project's GitHub repo. GitHub Pages supports submodules natively.
 
-Because submodules pull in the entire repo, use Jekyll's `exclude`/`include` in `_config.yml` to whitelist only the files you want served:
+Because submodules pull in the entire repo, use Jekyll's `exclude` in `_config.yml` to block files you don't want served. **Use a blacklist (not a whitelist):** GitHub Pages runs Jekyll 3.9.x, where `include:` only overrides default exclusions (dotfiles, underscore dirs) and does NOT override an explicit `exclude:` entry. A whitelist works locally on Jekyll 4.x but silently breaks on GitHub Pages.
 
 ```yaml
 exclude:
-  - some-project          # block the entire submodule directory
-
-include:
-  - some-project/repl.html   # re-include only what should be public
-  - some-project/spec.html
+  - some-project/notes_to_self.md   # block specific private files
+  - some-project/todo.md
+  - some-project/impl               # block whole directories
 ```
 
-`include:` overrides `exclude:`, so everything in the submodule is blocked except the whitelisted files. Both the HTML files and any JS/assets they reference at runtime need to be whitelisted. Check that referenced files are self-contained or that all their dependencies are also included.
+**Tradeoff:** any new file added to the submodule repo will be served publicly by default. When adding files to a submodule, check whether they need to be added to the blacklist in `_config.yml`.
+
+Check that any HTML files being served are self-contained or that all their JS/asset dependencies are also reachable.
 
 To update a submodule to its latest commit:
 ```bash
