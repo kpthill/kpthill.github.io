@@ -58,12 +58,23 @@ sass:
 #   - vendor/gems/
 #   - vendor/ruby/
 
-# Submodule whitelisting: exclude the entire dodo submodule, then re-include
-# only the files we want served. `include:` overrides `exclude:`.
+# Submodule blacklist: serve the whole dodo submodule except private/unwanted files.
+# We'd prefer a whitelist, but GitHub Pages uses Jekyll 3.x where `include:` does
+# not override an explicit `exclude:` entry, so a blacklist is the only option.
+# Note: new files added to the dodo repo will be served publicly by default.
 exclude:
-  - dodo
   - AGENTS.md
-
-include:
-  - dodo/repl.html
-  - dodo/spec.html
+  - dodo/AGENTS.md
+  - dodo/CLAUDE.md
+  - dodo/README.md
+  - dodo/dodo-spec.md
+  - dodo/dodo.js
+  - dodo/ex2.dodo
+  - dodo/examples
+  - dodo/impl
+  - dodo/implementation-notes.md
+  - dodo/notes_to_self.md
+  - dodo/package-lock.json
+  - dodo/package.json
+  - dodo/test
+  - dodo/todo.md
