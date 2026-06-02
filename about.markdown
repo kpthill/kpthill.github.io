@@ -2,6 +2,7 @@
 layout: page
 title: About
 permalink: /about/
+last_modified_at: 2026-06-02
 ---
 
 Hi, I'm Patrick.
