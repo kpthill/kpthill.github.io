@@ -6,3 +6,9 @@
 // keep @import here until we switch to a custom Actions build.
 @import "minima";
 @import "syntax";
+
+// Center images in the content column and give them breathing room.
+.post-content img {
+  display: block;
+  margin: 1.5em auto;
+}
