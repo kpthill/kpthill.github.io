@@ -119,9 +119,9 @@ invoking the solver was very straightforward:
 ### An artisanal hand-crafted CP-SAT invocation
 
 To learn more about this and try to lock in the lesson not to reinvent the
-wheel, I got together with [Zaki Mughal](https://github.com/zmughal) and another
-friend at recurse to do what is probably the most classic application of cp-sat
-to a puzzle, Sudoku.
+wheel, I got together with [Zaki](https://github.com/zmughal) and
+[Tommy](tommymaranges.com) at recurse to do what is probably the most classic
+application of cp-sat to a puzzle, Sudoku.
 
 This is a classic beginner application of the tool and easier to apply than for
 the corn puzzle; we simply have one variable per cell, with a value 1-9, and our
