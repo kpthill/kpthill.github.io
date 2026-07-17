@@ -120,7 +120,7 @@ invoking the solver was very straightforward:
 
 To learn more about this and try to lock in the lesson not to reinvent the
 wheel, I got together with [Zaki](https://github.com/zmughal) and
-[Tommy](tommymaranges.com) at recurse to do what is probably the most classic
+[Tommy](https://tommymaranges.com) at recurse to do what is probably the most classic
 application of cp-sat to a puzzle, Sudoku.
 
 This is a classic beginner application of the tool and easier to apply than for
