@@ -61,6 +61,28 @@ To update a submodule to its latest commit:
 cd some-project && git pull && cd .. && git add some-project && git commit
 ```
 
+## Deploying dodo updates
+
+The dodo pages (`/dodo/repl.html`, `/dodo/spec.html`) load the interpreter (`dodo/impl/*.js`) and
+the spec (`dodo/dodo-spec.md`) **live at runtime** — there are no embedded copies to re-sync. So
+after any change to the dodo language, deploying is exactly one step in this repo:
+
+```bash
+git submodule update --remote dodo && git add dodo && git commit -m "bump dodo" && git push
+```
+
+Notes:
+
+- **Pushing `master` here is what deploys.** Pushing the dodo repo alone changes nothing on the
+  live site — GitHub Pages builds from the submodule commit pinned in this repo. (`.gitmodules`
+  sets `branch = main` so `--remote` tracks dodo's `main`.)
+- There is deliberately **no CI/Action** auto-bumping the submodule; deploys are manual and
+  on-purpose.
+- `dodo/impl` and `dodo/dodo-spec.md` are intentionally *not* in the `_config.yml` exclude list —
+  the pages 404 without them. `dodo/repl-shims.js` (top level) must also stay served.
+- The dodo pages don't work from `file://`; preview via `bundle exec jekyll serve` (or
+  `python3 -m http.server` inside the dodo repo). Config changes need a jekyll serve restart.
+
 ## Git history and authorship
 
 Keeping the git history representative of who actually wrote what is important. Follow these rules strictly:

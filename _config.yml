@@ -62,17 +62,19 @@ sass:
 # We'd prefer a whitelist, but GitHub Pages uses Jekyll 3.x where `include:` does
 # not override an explicit `exclude:` entry, so a blacklist is the only option.
 # Note: new files added to the dodo repo will be served publicly by default.
+# dodo/impl and dodo/dodo-spec.md are deliberately served: repl.html imports
+# ./impl/*.js as ES modules and spec.html fetches ./dodo-spec.md at runtime.
+# dodo/repl-shims.js (top level) must also stay served.
 exclude:
   - AGENTS.md
   - dodo/AGENTS.md
   - dodo/CLAUDE.md
   - dodo/README.md
-  - dodo/dodo-spec.md
   - dodo/dodo.js
   - dodo/ex2.dodo
   - dodo/examples
-  - dodo/impl
   - dodo/implementation-notes.md
+  - dodo/node_modules
   - dodo/notes_to_self.md
   - dodo/package-lock.json
   - dodo/package.json
