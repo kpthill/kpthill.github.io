@@ -28,6 +28,12 @@ twitter_username: kpthill
 github_username:  kpthill
 show_excerpts: true
 
+# Recurse Center webring (https://ring.recurse.com/) member id. The header
+# dropdown renders the required prev/random/next links only when this is set.
+# TODO(patrick): log in at ring.recurse.com, submit thill.me, and put the
+# assigned id here.
+# recurse_webring_id: 0
+
 # Build settings
 theme: minima
 plugins:

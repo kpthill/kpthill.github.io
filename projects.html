@@ -1,0 +1,29 @@
+---
+layout: page
+title: Projects
+permalink: /projects/
+---
+
+<p>Things I've built, mostly at the <a href="https://www.recurse.com/">Recurse Center</a>. Everything with a screenshot links to a live demo you can try in the browser.</p>
+
+<ul class="project-grid">
+  {%- for project in site.data.projects -%}
+  <li class="project-card">
+    <a class="project-card-image" href="{{ project.demo | relative_url }}">
+      <img src="{{ project.image | relative_url }}" alt="Screenshot of {{ project.title }}" loading="lazy">
+    </a>
+    <div class="project-card-body">
+      <h3><a href="{{ project.demo | relative_url }}">{{ project.title }}</a></h3>
+      <p>{{ project.description }}</p>
+      {%- if project.demo_note %}
+      <p class="project-demo-note">{{ project.demo_note }}</p>
+      {%- endif %}
+      <p class="project-links">
+        <a href="{{ project.demo | relative_url }}">demo</a>
+        {%- if project.source %} · <a href="{{ project.source }}">source</a>{% endif -%}
+        {%- for link in project.extra_links %} · <a href="{{ link.url | relative_url }}">{{ link.label }}</a>{% endfor %}
+      </p>
+    </div>
+  </li>
+  {%- endfor -%}
+</ul>

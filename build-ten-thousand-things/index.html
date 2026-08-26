@@ -1,0 +1,987 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Build Ten Thousand Things</title>
+<style>
+  @font-face {
+    font-family: 'Bricolage Grotesque';
+    src: url('fonts/bricolage-grotesque-latin-400-normal.woff2') format('woff2');
+    font-weight: 400; font-style: normal;
+  }
+  @font-face {
+    font-family: 'Bricolage Grotesque';
+    src: url('fonts/bricolage-grotesque-latin-600-normal.woff2') format('woff2');
+    font-weight: 600; font-style: normal;
+  }
+  @font-face {
+    font-family: 'Bricolage Grotesque';
+    src: url('fonts/bricolage-grotesque-latin-800-normal.woff2') format('woff2');
+    font-weight: 800; font-style: normal;
+  }
+  @font-face {
+    font-family: 'IBM Plex Mono';
+    src: url('fonts/ibm-plex-mono-latin-400-normal.woff2') format('woff2');
+    font-weight: 400; font-style: normal;
+  }
+  @font-face {
+    font-family: 'IBM Plex Mono';
+    src: url('fonts/ibm-plex-mono-latin-400-italic.woff2') format('woff2');
+    font-weight: 400; font-style: italic;
+  }
+  @font-face {
+    font-family: 'IBM Plex Mono';
+    src: url('fonts/ibm-plex-mono-latin-500-normal.woff2') format('woff2');
+    font-weight: 500; font-style: normal;
+  }
+
+  :root {
+    --ink: #0c0f16;          /* stage background */
+    --ink-raise: #151a24;    /* card background */
+    --paper: #e9e5d9;        /* main text */
+    --dim: #8a8fa0;          /* secondary text */
+    --amber: #e8a33d;        /* accent */
+    --sky: #85b8e8;          /* echo of terminal syntax blue */
+    --hairline: #2a3040;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html, body {
+    height: 100%;
+    background: #000;
+    overflow: hidden;
+    font-family: 'Bricolage Grotesque', system-ui, sans-serif;
+    color: var(--paper);
+  }
+
+  /* ---- stage scaling: fixed 1280x720 design surface ---- */
+  #stage-wrap {
+    position: fixed; inset: 0;
+    display: flex; align-items: center; justify-content: center;
+  }
+  #stage {
+    width: 1280px; height: 720px;
+    position: relative;
+    background: var(--ink);
+    transform-origin: center center;
+    overflow: hidden;
+  }
+
+  .slide {
+    position: absolute; inset: 0;
+    padding: 56px 72px;
+    display: none;
+    flex-direction: column;
+  }
+  .slide.active { display: flex; }
+
+  /* ---- shared furniture ---- */
+  .thing-tag {
+    position: absolute;
+    top: 34px; right: 72px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 15px;
+    color: var(--dim);
+    letter-spacing: 0.06em;
+  }
+  .thing-tag b { color: var(--amber); font-weight: 500; }
+
+  h1.slide-title {
+    font-weight: 800;
+    font-size: 46px;
+    line-height: 1.05;
+    letter-spacing: -0.01em;
+    margin-bottom: 34px;
+  }
+
+  .img-card {
+    background: var(--ink-raise);
+    border: 1px solid var(--hairline);
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.45);
+  }
+  .img-card img { display: block; width: 100%; height: 100%; object-fit: cover; }
+
+  .mono-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 13px;
+    color: var(--dim);
+    letter-spacing: 0.04em;
+  }
+
+  /* single big screenshot slides */
+  .slide .content { flex: 1; min-height: 0; display: flex; justify-content: center; }
+  .hero-card {
+    align-self: center;
+    max-height: 100%;
+    max-width: 1136px;
+    min-height: 0;
+  }
+  .hero-card img { object-fit: contain; width: 100%; height: 100%; }
+  #s-terrain .hero-card { aspect-ratio: 2372 / 1568; height: 100%; width: auto; }
+  #s-justone .hero-card { aspect-ratio: 1674 / 1140; height: 100%; width: auto; }
+  #s-justone .hero-card img { object-fit: cover; object-position: top; }
+  #llmgame-card { aspect-ratio: 3000 / 1218; width: 100%; height: auto; align-self: center; }
+
+  /* ================= gba ================= */
+  #gba-content { gap: 36px; align-items: center; }
+  .gba-shell {
+    flex-shrink: 0;
+    width: 720px; height: 350px;
+    background: linear-gradient(160deg, #6a5fc9, #4a4190);
+    border-radius: 40px / 90px;
+    display: grid;
+    grid-template-columns: 130px 1fr 130px;
+    align-items: center;
+    box-shadow: 0 18px 50px rgba(0,0,0,0.55), inset 0 2px 3px rgba(255,255,255,0.25), inset 0 -4px 8px rgba(0,0,0,0.35);
+  }
+  .gba-screen-bezel {
+    background: #262a38;
+    border-radius: 14px;
+    padding: 14px 18px 18px;
+    box-shadow: inset 0 2px 8px rgba(0,0,0,0.7);
+  }
+  .gba-wordmark {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px; letter-spacing: 0.28em;
+    color: #9aa2c0; text-align: center; margin-bottom: 8px;
+  }
+  .gba-wordmark span { color: #c9cee6; }
+  .gba-screen {
+    aspect-ratio: 3 / 2;
+    border-radius: 4px;
+    overflow: hidden;
+    background: #000;
+  }
+  .gba-screen img { width: 100%; height: 100%; object-fit: contain; display: block; }
+  .gba-dpad { position: relative; width: 84px; height: 84px; justify-self: center; }
+  .dp { position: absolute; background: #2e2a45; border-radius: 6px; box-shadow: 0 3px 5px rgba(0,0,0,0.5); }
+  .dp.v { left: 28px; top: 0; width: 28px; height: 84px; }
+  .dp.h { left: 0; top: 28px; width: 84px; height: 28px; }
+  .gba-btns { display: flex; flex-direction: column; gap: 26px; align-items: center; }
+  .gba-ab { display: flex; gap: 12px; transform: rotate(-22deg); }
+  .ab {
+    width: 40px; height: 40px; border-radius: 50%;
+    background: #2e2a45; color: #8f87b8;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'IBM Plex Mono', monospace; font-size: 15px;
+    box-shadow: 0 3px 5px rgba(0,0,0,0.5);
+  }
+  .gba-ss { display: flex; gap: 10px; transform: rotate(-22deg); }
+  .ss { width: 26px; height: 8px; border-radius: 4px; background: #2e2a45; }
+  .gba-side { flex: 1; display: flex; flex-direction: column; gap: 16px; min-height: 0; align-self: stretch; }
+  .gba-side .collage-item { flex: 1; display: flex; flex-direction: column; gap: 6px; min-height: 0; }
+  .gba-side .img-card { flex: 1; min-height: 0; }
+  .gba-side img { object-fit: contain; height: 100%; }
+
+  /* ================= rhythm ================= */
+  #rhythm-card { aspect-ratio: 1324 / 1032; height: 100%; width: auto; }
+  #hsr-card { aspect-ratio: 2578 / 1712; height: 100%; width: auto; }
+  #hsr-content { gap: 26px; justify-content: center; align-items: center; }
+  #hsr-panel-card { aspect-ratio: 640 / 970; height: 96%; width: auto; flex-shrink: 0; }
+  #hsr-panel-card img { object-fit: contain; height: 100%; }
+  #hsr-content .hero-card { min-width: 0; max-height: 100%; }
+
+  /* ================= poem ================= */
+  #poem-content { justify-content: center; align-items: center; }
+  .poem-frame-wrap {
+    /* 11in x 8.5in = 1056 x 816 px, scaled to fit ~572px height */
+    width: calc(1056px * 0.70);
+    height: calc(816px * 0.70);
+    overflow: hidden;
+    border-radius: 6px;
+    box-shadow: 0 18px 50px rgba(0,0,0,0.6);
+  }
+  #poem-frame {
+    width: 1056px; height: 816px;
+    border: 0;
+    transform: scale(0.70);
+    transform-origin: top left;
+  }
+  #pipeline-content { justify-content: center; align-items: center; }
+  #pipeline-content svg { width: 1000px; height: auto; }
+
+  /* ================= interlang ================= */
+  .slide.interlang { padding-bottom: 118px; }
+  .slide.interlang .slide-title { margin-bottom: 20px; font-size: 42px; }
+  .il-center { justify-content: center; align-items: center; gap: 60px; }
+  .il-center-col { flex-direction: column; justify-content: center; align-items: center; gap: 24px; }
+
+  .udhr { text-align: center; max-width: 900px; }
+  .udhr-eyebrow {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 14px; letter-spacing: 0.16em; color: var(--amber);
+    margin-bottom: 30px;
+  }
+  .udhr-line {
+    font-weight: 600;
+    font-size: 40px; line-height: 1.35;
+    margin-bottom: 26px;
+  }
+  .udhr-orig {
+    margin-top: 8px; padding-top: 22px;
+    border-top: 1px solid var(--hairline);
+    font-size: 16px; font-style: italic; color: var(--dim);
+    max-width: 720px; margin-left: auto; margin-right: auto;
+    line-height: 1.5;
+  }
+
+  .il-table { border-collapse: collapse; font-size: 22px; }
+  .il-table th, .il-table td { padding: 10px 26px; text-align: center; }
+  .il-table thead th {
+    font-family: 'IBM Plex Mono', monospace; font-weight: 400;
+    font-size: 15px; letter-spacing: 0.08em; color: var(--dim);
+    border-bottom: 1px solid var(--hairline);
+  }
+  .il-table tbody th {
+    font-family: 'IBM Plex Mono', monospace; font-weight: 400;
+    font-size: 15px; color: var(--dim); text-align: right;
+  }
+  .phon-table td { font-family: 'IBM Plex Mono', monospace; font-size: 24px; color: var(--sky); }
+  .phon-right { display: flex; flex-direction: column; gap: 26px; align-items: center; }
+  .syllable-badge {
+    font-family: 'IBM Plex Mono', monospace; font-size: 17px; color: var(--dim);
+    border: 1px solid var(--hairline); border-radius: 8px; padding: 10px 18px;
+  }
+  .syllable-badge b { color: var(--amber); font-weight: 500; }
+
+  #gram-content { flex-direction: column; gap: 18px; align-items: center; justify-content: center; }
+  .gram-table { font-size: 16.5px; }
+  .gram-table td { text-align: left; padding: 5px 20px; border-bottom: 1px solid #1b2130; }
+  .gram-table .il { font-weight: 600; color: var(--paper); white-space: nowrap; }
+  .gram-table .gloss { font-family: 'IBM Plex Mono', monospace; font-size: 12.5px; color: var(--dim); }
+  .gram-table .en { font-style: italic; color: #b8b4a8; }
+
+  .simchart { font-family: 'IBM Plex Mono', monospace; font-size: 13px; width: 760px; }
+  .simchart-title { color: var(--dim); letter-spacing: 0.08em; margin-bottom: 6px; font-size: 12px; }
+  .simrow { display: grid; grid-template-columns: 105px 300px 46px 1fr; gap: 12px; align-items: center; padding: 1px 0; }
+  .simrow .sl { color: var(--paper); text-align: right; }
+  .simrow .sb { height: 10px; background: linear-gradient(90deg, #b97f2e, var(--amber)); border-radius: 2px; width: calc(300px * var(--w) / 84%); }
+  .simrow .sv { color: var(--dim); }
+  .simrow .sn { color: var(--sky); font-size: 12px; }
+  .simfoot { color: var(--dim); margin-top: 6px; padding-top: 6px; border-top: 1px solid var(--hairline); font-size: 12px; }
+
+  .lex-table { font-size: 20px; }
+  .lex-table td { text-align: left; padding: 8px 26px; border-bottom: 1px solid #1b2130; }
+  .lex-table .il { font-weight: 600; }
+  .lex-table .src { font-family: 'IBM Plex Mono', monospace; font-size: 14px; color: var(--dim); }
+  .lex-note { font-size: 19px; color: #b8b4a8; }
+  .lex-note b { color: var(--amber); }
+
+  /* ================= meta + reflection ================= */
+  #meta-content { justify-content: center; align-items: center; }
+  .paper {
+    background: #f4f1e8;
+    border-radius: 6px;
+    box-shadow: 0 18px 50px rgba(0,0,0,0.6);
+    height: 100%;
+    width: 1090px;
+    padding: 26px 30px;
+    overflow: hidden;
+    transform: rotate(-0.4deg);
+  }
+  .paper pre {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 5.4px;
+    line-height: 1.38;
+    color: #3a3730;
+    white-space: pre-wrap;
+    column-count: 4;
+    column-gap: 26px;
+    column-rule: 1px solid #ddd8ca;
+    height: 100%;
+  }
+  #reflect-content { justify-content: center; align-items: center; }
+  .verdict { border-collapse: collapse; font-size: 27px; }
+  .verdict td { padding: 17px 34px; border-bottom: 1px solid var(--hairline); }
+  .verdict td:first-child { color: var(--paper); }
+  .verdict .v { font-size: 30px; text-align: left; white-space: nowrap; }
+  .verdict .priceless {
+    font-family: 'IBM Plex Mono', monospace;
+    font-style: italic; font-size: 24px; color: var(--amber);
+  }
+
+  /* subtitles */
+  #subtitle-bar {
+    position: absolute;
+    left: 50%; bottom: 20px;
+    transform: translateX(-50%);
+    width: max-content;
+    max-width: 1150px;
+    padding: 9px 24px;
+    background: rgba(6, 8, 12, 0.9);
+    border-radius: 10px;
+    font-size: 19px; line-height: 1.38;
+    text-align: center;
+    color: var(--paper);
+    display: none;
+  }
+
+  /* ================= title slide ================= */
+  #s-title {
+    justify-content: center;
+    padding: 0 96px;
+  }
+  #s-title .kicker {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 17px;
+    color: var(--amber);
+    letter-spacing: 0.14em;
+    margin-bottom: 26px;
+  }
+  #s-title h1 {
+    font-weight: 800;
+    font-size: 108px;
+    line-height: 0.98;
+    letter-spacing: -0.025em;
+    max-width: 1050px;
+  }
+  #s-title h1 .paren {
+    display: block;
+    font-weight: 400;
+    font-size: 54px;
+    color: var(--dim);
+    margin-top: 18px;
+    letter-spacing: -0.01em;
+  }
+  #s-title .byline {
+    margin-top: 48px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 19px;
+    color: var(--paper);
+  }
+  #s-title .byline span { color: var(--dim); }
+  /* signature: a tally wall, counting toward ten thousand */
+  #tally {
+    position: absolute; inset: 0;
+    pointer-events: none;
+    opacity: 0.13;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 22px;
+    line-height: 2.1;
+    color: var(--sky);
+    padding: 20px 28px;
+    overflow: hidden;
+    white-space: pre-wrap;
+    word-break: break-all;
+    user-select: none;
+  }
+
+  /* ================= setup & examples ================= */
+  #s-setup .content {
+    flex: 1;
+    display: grid;
+    grid-template-columns: 1fr 400px;
+    gap: 28px;
+    min-height: 0;
+  }
+  #s-setup .left {
+    display: flex; flex-direction: column; gap: 18px; min-height: 0;
+  }
+  #s-setup .agents-card {
+    border-color: var(--amber);
+    box-shadow: 0 0 0 1px var(--amber), 0 14px 40px rgba(0,0,0,0.5);
+  }
+  #s-setup .agents-card img { object-fit: contain; height: auto; }
+  #s-setup .dir-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 14px;
+    flex: 1;
+    min-height: 0;
+    align-items: start;
+  }
+  #s-setup .dir-row { align-content: center; }
+  #s-setup .dir-item { display: flex; flex-direction: column; gap: 7px; min-height: 0; }
+  #s-setup .dir-item .img-card { opacity: 0.82; }
+  #s-setup .dir-item .img-card img { width: 100%; height: auto; object-fit: contain; }
+  #s-setup .right { display: flex; flex-direction: column; gap: 7px; min-height: 0; }
+  #s-setup .right .img-card { flex: 1; min-height: 0; }
+  #s-setup .right .img-card img { object-fit: cover; object-position: left top; }
+
+  /* ================= babel ================= */
+  #s-babel .content {
+    flex: 1;
+    display: grid;
+    grid-template-columns: 500px 1fr;
+    gap: 30px;
+    min-height: 0;
+    align-items: stretch;
+  }
+  #s-babel .c-board { transform: rotate(-1deg); }
+  #s-babel .c-board img { object-fit: contain; height: 100%; }
+  #s-babel .col-right {
+    display: flex; flex-direction: column; gap: 20px; min-height: 0;
+  }
+  #s-babel .collage-item { display: flex; flex-direction: column; gap: 7px; min-height: 0; }
+  #s-babel .c-chars { flex: 1.1; transform: rotate(0.6deg); }
+  #s-babel .c-chars .img-card { flex: 1; min-height: 0; }
+  #s-babel .c-chars img { object-fit: cover; object-position: center top; }
+  #s-babel .row-bottom {
+    flex: 1;
+    display: grid;
+    grid-template-columns: 1.5fr 1fr;
+    gap: 20px;
+    min-height: 0;
+  }
+  #s-babel .row-bottom .collage-item .img-card { flex: 1; min-height: 0; }
+  #s-babel .c-palette { transform: rotate(-0.6deg); }
+  #s-babel .c-palette img { object-fit: cover; object-position: center top; }
+  #s-babel .c-rooms { transform: rotate(0.8deg); }
+  #s-babel .c-rooms img { object-fit: cover; object-position: center top; }
+</style>
+</head>
+<body>
+
+<div id="stage-wrap">
+  <div id="stage">
+
+    <!-- ============ 1 · TITLE ============ -->
+    <section class="slide active" id="s-title">
+      <div id="tally"></div>
+      <div class="kicker">SUMMER PROJECTS · RECURSE CENTER</div>
+      <h1>Build ten thousand things
+        <span class="paren">(in five minutes)</span>
+      </h1>
+      <div class="byline">Patrick Thill <span>· S1 '26</span></div>
+    </section>
+
+    <!-- ============ 2 · SETUP AND EXAMPLES ============ -->
+    <section class="slide" id="s-setup">
+      <div class="thing-tag">things <b>0001–0003</b></div>
+      <h1 class="slide-title">Setup, examples, and tests</h1>
+      <div class="content">
+        <div class="left">
+          <div class="img-card agents-card">
+            <img src="assets/agents-md.png" alt="AGENTS.md: agents must never write the interpreter implementation code">
+          </div>
+          <div class="dir-row">
+            <div class="dir-item">
+              <div class="mono-label">deflate-rust/</div>
+              <div class="img-card"><img src="assets/deflate-dir.png" alt="deflate-rust directory"></div>
+            </div>
+            <div class="dir-item">
+              <div class="mono-label">dodo/</div>
+              <div class="img-card"><img src="assets/dodo-dir.png" alt="dodo directory"></div>
+            </div>
+            <div class="dir-item">
+              <div class="mono-label">satsolver/</div>
+              <div class="img-card"><img src="assets/satsolver-dir.png" alt="satsolver directory"></div>
+            </div>
+          </div>
+        </div>
+        <div class="right">
+          <div class="mono-label">dodo/spec.html — written by the agent</div>
+          <div class="img-card"><img src="assets/dodo-spec.png" alt="Dodo language specification page"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ 3 · A BOARD GAME ============ -->
+    <section class="slide" id="s-babel">
+      <div class="thing-tag">thing <b>0004</b></div>
+      <h1 class="slide-title">A Board Game</h1>
+      <div class="content">
+        <div class="img-card c-board"><img src="assets/babel-board.png" alt="Babel game board art"></div>
+        <div class="col-right">
+          <div class="collage-item c-chars">
+            <div class="mono-label">historical research → worker cards</div>
+            <div class="img-card"><img src="assets/babel-characters.png" alt="Character gallery of historical Babylonian figures"></div>
+          </div>
+          <div class="row-bottom">
+            <div class="collage-item c-palette">
+              <div class="mono-label">design guide</div>
+              <div class="img-card"><img src="assets/babel-palette.png" alt="Color palette from the design guide"></div>
+            </div>
+            <div class="collage-item c-rooms">
+              <div class="mono-label">print-ready SVGs</div>
+              <div class="img-card"><img src="assets/babel-rooms.png" alt="Tower room cutout sheets"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ 4 · TERRAIN BUILDER ============ -->
+    <section class="slide" id="s-terrain">
+      <div class="thing-tag">thing <b>0005</b></div>
+      <h1 class="slide-title">A sandbox for themselves, and a map generator</h1>
+      <div class="content">
+        <div class="img-card hero-card"><img src="assets/autobiomes.png" alt="AutoBiomes procedural climate simulation map generator"></div>
+      </div>
+    </section>
+
+    <!-- ============ 5 · COOPERATIVE GAME FOR ROBOTS ============ -->
+    <section class="slide" id="s-justone">
+      <div class="thing-tag">thing <b>0006</b></div>
+      <h1 class="slide-title">A Cooperative Game For Robots</h1>
+      <div class="content">
+        <div class="img-card hero-card"><img src="assets/just-one-bot.png" alt="Just One Bot interface: seven LLM players, one guesser"></div>
+      </div>
+    </section>
+
+    <!-- ============ 6 · NEGOTIATION GAME ============ -->
+    <section class="slide" id="s-llmgame">
+      <div class="thing-tag">thing <b>0007</b></div>
+      <h1 class="slide-title">A Conversation Game</h1>
+      <div class="content">
+        <div class="img-card hero-card" id="llmgame-card"><img src="assets/llm-game.png" alt="Shuttle Diplomacy: negotiating with Minister Nia Toure"></div>
+      </div>
+    </section>
+
+    <!-- ============ 7 · GBA PICTIONARY ============ -->
+    <section class="slide" id="s-gba">
+      <div class="thing-tag">thing <b>0008</b></div>
+      <h1 class="slide-title">A convolution net on the GBA</h1>
+      <div class="content" id="gba-content">
+        <div class="gba-shell">
+          <div class="gba-dpad">
+            <div class="dp v"></div><div class="dp h"></div>
+          </div>
+          <div class="gba-screen-bezel">
+            <div class="gba-wordmark">GAME BOY <span>ADVANCE</span></div>
+            <div class="gba-screen"><img src="assets/gba-draw.png" alt="Drawing a fish on the GBA"></div>
+          </div>
+          <div class="gba-btns">
+            <div class="gba-ab"><div class="ab">A</div><div class="ab">B</div></div>
+            <div class="gba-ss"><div class="ss"></div><div class="ss"></div></div>
+          </div>
+        </div>
+        <div class="gba-side">
+          <div class="collage-item">
+            <div class="mono-label">title screen</div>
+            <div class="img-card"><img src="assets/gba-title.png" alt="GBA Pictionary title: draw it in 6 seconds, a neural net is judging"></div>
+          </div>
+          <div class="collage-item">
+            <div class="mono-label">the net judges</div>
+            <div class="img-card"><img src="assets/gba-results.png" alt="Net says: cup 68%, key 22%, square 8% — grade B"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ 8 · RHYTHM GAME ============ -->
+    <section class="slide" id="s-rhythm">
+      <div class="thing-tag">thing <b>0009</b></div>
+      <h1 class="slide-title">A rhythm game for the rcade</h1>
+      <div class="content">
+        <div class="img-card hero-card" id="rhythm-card"><img src="assets/rhythm.png" alt="Two-player spinner rhythm game"></div>
+      </div>
+    </section>
+
+    <!-- ============ 9 · CALIFORNIA HSR ============ -->
+    <section class="slide" id="s-hsr">
+      <div class="thing-tag">thing <b>0010</b></div>
+      <h1 class="slide-title">HSR for California</h1>
+      <div class="content" id="hsr-content">
+        <div class="img-card" id="hsr-panel-card"><img src="assets/hsr-panel.png" alt="Travel time comparison: fantasy network 3h26m beats driving and flying"></div>
+        <div class="img-card hero-card" id="hsr-card"><img src="assets/hsr.png" alt="CA Fantasy Transit rail network map"></div>
+      </div>
+    </section>
+
+    <!-- ============ 10 · TWO-LANGUAGE POEM ============ -->
+    <section class="slide" id="s-poem">
+      <div class="thing-tag">thing <b>0011</b></div>
+      <h1 class="slide-title">A poem in two languages</h1>
+      <div class="content" id="poem-content">
+        <div class="poem-frame-wrap">
+          <iframe id="poem-frame" src="poem.html" scrolling="no" title="Tanah, Tanah, Rumah — bilingual poem broadside"></iframe>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ 11 · POEM PIPELINE ============ -->
+    <section class="slide" id="s-poem2">
+      <div class="thing-tag">thing <b>0011</b></div>
+      <div class="content" id="pipeline-content">
+        <svg viewBox="0 0 1140 480" xmlns="http://www.w3.org/2000/svg" font-family="'IBM Plex Mono', monospace">
+          <defs>
+            <marker id="arrh" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+              <path d="M 0 0 L 10 5 L 0 10 z" fill="#e8a33d"/>
+            </marker>
+          </defs>
+          <g id="boxes" font-size="21" text-anchor="middle">
+            <rect x="30"  y="80"  width="230" height="80" rx="12" fill="#151a24" stroke="#2a3040" stroke-width="1.5"/>
+            <text x="145" y="128" fill="#e9e5d9">Phoible</text>
+            <rect x="30"  y="320" width="230" height="80" rx="12" fill="#151a24" stroke="#2a3040" stroke-width="1.5"/>
+            <text x="145" y="360" fill="#e9e5d9">Online</text>
+            <text x="145" y="386" fill="#e9e5d9">Dictionaries</text>
+            <rect x="440" y="200" width="230" height="80" rx="12" fill="#151a24" stroke="#e8a33d" stroke-width="1.5"/>
+            <text x="555" y="248" fill="#e9e5d9">Beam search</text>
+            <rect x="440" y="380" width="230" height="80" rx="12" fill="#151a24" stroke="#2a3040" stroke-width="1.5"/>
+            <text x="555" y="428" fill="#e9e5d9">LLM judges</text>
+            <rect x="880" y="380" width="230" height="80" rx="12" fill="#151a24" stroke="#2a3040" stroke-width="1.5"/>
+            <text x="995" y="428" fill="#e9e5d9">Composition</text>
+          </g>
+          <g stroke="#e8a33d" stroke-width="2" fill="none">
+            <path d="M 260 120 C 360 120, 380 210, 438 228" marker-end="url(#arrh)"/>
+            <path d="M 260 360 C 360 360, 380 270, 438 252" marker-end="url(#arrh)"/>
+            <path d="M 555 282 L 555 378" marker-end="url(#arrh)"/>
+            <path d="M 672 420 L 877 420" marker-end="url(#arrh)"/>
+          </g>
+          <g font-size="16" fill="#8a8fa0">
+            <text x="330" y="96">Farsi + Indonesian</text>
+            <text x="575" y="336">1700 candidate lines</text>
+            <text x="700" y="404">38 candidate lines</text>
+          </g>
+        </svg>
+      </div>
+    </section>
+
+    <!-- ============ 12 · INTERLANG: UDHR ============ -->
+    <section class="slide interlang" id="s-il-udhr"
+      data-subtitles='["", "I can&apos;t be giving this part of the presentation in English.", "This is probably going to be the longest project discussion since I just finished and I remember more of it.", "For those not in the know, a conlang is a constructed language, one that someone just made up instead of evolving naturally — think of Quenya from Lord of the Rings or Dothraki from Game of Thrones.", "An International Auxiliary Language is one that&apos;s made to be easy to learn for anyone, regardless of their first language.", "One famous early IAL was Esperanto, but it kinda sucks — in particular, it&apos;s very Eurocentric.", "I wondered if, given all the data we now have, we could build an IAL programmatically to avoid introducing these sorts of bias."]'>
+      <div class="thing-tag">thing <b>0012</b></div>
+      <h1 class="slide-title">An international auxiliary language</h1>
+      <div class="content il-center">
+        <div class="udhr">
+          <div class="udhr-eyebrow">universal declaration of human rights · article 1</div>
+          <p class="udhr-line">Ote kim salia; fu wan asadi<br>pi sama sai karama pi haki.</p>
+          <p class="udhr-line">Fu punja akili pi damiri,<br>pi lasima mum ke jembasika<br>sai sudara roho.</p>
+          <div class="udhr-orig">All human beings are born free and equal in dignity and rights. They are endowed with reason and conscience and should act towards one another in a spirit of brotherhood.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ 13 · INTERLANG: PHONOLOGY ============ -->
+    <section class="slide interlang" id="s-il-phon"
+      data-subtitles='["We used PHOIBLE again to put together a set of sounds that is common to a lot of world languages.", "We used a dataset of loanwords to get a sense of how recognizable words would be after they get transliterated to fit our new language&apos;s phonology."]'>
+      <div class="thing-tag">thing <b>0012</b></div>
+      <h1 class="slide-title">Phonology &amp; phonotactics</h1>
+      <div class="content il-center" id="phon-content">
+        <table class="il-table phon-table">
+          <thead><tr><th></th><th>lips</th><th>tongue-tip</th><th>back</th><th>throat</th></tr></thead>
+          <tbody>
+            <tr><th>stop</th><td>p</td><td>t</td><td>k</td><td></td></tr>
+            <tr><th>stop (voiced)</th><td>b</td><td>d</td><td>g</td><td></td></tr>
+            <tr><th>nasal</th><td>m</td><td>n</td><td></td><td></td></tr>
+            <tr><th>fricative</th><td>f</td><td>s</td><td></td><td>h</td></tr>
+            <tr><th>glide / liquid</th><td>w</td><td>l&nbsp;&nbsp;r</td><td>j</td><td></td></tr>
+          </tbody>
+        </table>
+        <div class="phon-right">
+          <table class="il-table phon-table vowels">
+            <thead><tr><th></th><th>front</th><th>back</th></tr></thead>
+            <tbody>
+              <tr><th>close</th><td>i</td><td>u</td></tr>
+              <tr><th>mid</th><td>e</td><td>o</td></tr>
+              <tr><th>open</th><td colspan="2">a</td></tr>
+            </tbody>
+          </table>
+          <div class="syllable-badge">syllables: <b>(C)V(N)</b></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ 14 · INTERLANG: GRAMMAR ============ -->
+    <section class="slide interlang" id="s-il-gram"
+      data-subtitles='["For grammar, we used a few different datasets, and checked our decisions against the Lingua Descriptive Studies Questionnaire by Comrie and Smith to make sure we hit everything.", "One interesting idea here — to make it easily learnable, we let existing pidgin languages guide our decisions.", "These languages are already the result of adults who speak different languages trying to communicate, so they are a good guide to what&apos;s simple."]'>
+      <div class="thing-tag">thing <b>0012</b></div>
+      <h1 class="slide-title">Grammar</h1>
+      <div class="content" id="gram-content">
+        <table class="il-table gram-table">
+          <tbody>
+            <tr><td class="il">Jo we bisa ma Engilisi.</td><td class="gloss">I NOT can speak English</td><td class="en">I can't speak English.</td></tr>
+            <tr><td class="il">Pon suda mum lekisikon.</td><td class="gloss">we PAST make lexicon</td><td class="en">We made a lexicon.</td></tr>
+            <tr><td class="il">Fin pon bisa mum lingua?</td><td class="gloss">Q we can make language</td><td class="en">Can we make a language?</td></tr>
+            <tr><td class="il">Nen lingua wan hao pandu.</td><td class="gloss">this language IS good guide</td><td class="en">This language is a good guide.</td></tr>
+            <tr><td class="il">Mumlingua wan lingua mim jem kim mum.</td><td class="gloss">make-language IS language THAT one person make</td><td class="en">A conlang is a language that a person made.</td></tr>
+          </tbody>
+        </table>
+        <div class="simchart">
+          <div class="simchart-title">grammar similarity to interlang</div>
+          <div class="simrow"><span class="sl">Mandarin</span><span class="sb" style="--w:84.0%"></span><span class="sv">.840</span><span class="sn">← 97th percentile</span></div>
+          <div class="simrow"><span class="sl">Vietnamese</span><span class="sb" style="--w:82.2%"></span><span class="sv">.822</span><span class="sn"></span></div>
+          <div class="simrow"><span class="sl">Thai</span><span class="sb" style="--w:81.4%"></span><span class="sv">.814</span><span class="sn"></span></div>
+          <div class="simrow"><span class="sl">English</span><span class="sb" style="--w:74.3%"></span><span class="sv">.743</span><span class="sn"></span></div>
+          <div class="simrow"><span class="sl">Hindi</span><span class="sb" style="--w:68.5%"></span><span class="sv">.685</span><span class="sn"></span></div>
+          <div class="simrow"><span class="sl">Japanese</span><span class="sb" style="--w:66.5%"></span><span class="sv">.665</span><span class="sn"></span></div>
+          <div class="simrow"><span class="sl">French</span><span class="sb" style="--w:65.8%"></span><span class="sv">.658</span><span class="sn"></span></div>
+          <div class="simrow"><span class="sl">Russian</span><span class="sb" style="--w:62.4%"></span><span class="sv">.624</span><span class="sn"></span></div>
+          <div class="simrow"><span class="sl">Arabic</span><span class="sb" style="--w:55.6%"></span><span class="sv">.556</span><span class="sn">← 4th percentile</span></div>
+          <div class="simfoot">world average .693 &nbsp;·&nbsp; Standard Average European → 41st percentile</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ 15 · INTERLANG: LEXICON ============ -->
+    <section class="slide interlang" id="s-il-lex"
+      data-subtitles='["Finally, we built the lexicon automatically using a bunch of dictionaries of different languages.", "This was not actually a proper constrained optimization problem since I ran out of time, but the idea was basically to have two objectives — maximize recognizability of words for easy learnability, ranking by how many people speak a language with a related word, and maximize representativeness in parallel, rather than sticking to a european-derived lexicon.", "So we have a technical vocabulary that&apos;s very recognizable, where we borrow the same words that are already common cross-linguistically — including the words like “phonology” that I&apos;m using in this speech — but the base words are spread across language families rather than being drawn from a narrow set of source languages."]'>
+      <div class="thing-tag">thing <b>0012</b></div>
+      <h1 class="slide-title">Lexicon</h1>
+      <div class="content il-center-col">
+        <table class="il-table lex-table">
+          <thead><tr><th>word</th><th>means</th><th>from</th></tr></thead>
+          <tbody>
+            <tr><td class="il">dunia</td><td>world</td><td class="src">Arabic → also Hausa, Swahili, Indonesian, Turkish, Hindi</td></tr>
+            <tr><td class="il">hao</td><td>good</td><td class="src">Mandarin</td></tr>
+            <tr><td class="il">pikiri</td><td>think</td><td class="src">Indonesian</td></tr>
+            <tr><td class="il">sasa</td><td>now</td><td class="src">Swahili</td></tr>
+            <tr><td class="il">asan</td><td>easy</td><td class="src">Persian</td></tr>
+            <tr><td class="il">da</td><td>with</td><td class="src">Hausa</td></tr>
+            <tr><td class="il">sai</td><td>in</td><td class="src">Mandarin</td></tr>
+            <tr><td class="il">fonologia</td><td>phonology</td><td class="src">international</td></tr>
+          </tbody>
+        </table>
+        <div class="lex-note"><b>55 language families.</b> No family gives more than 3 roots.</div>
+      </div>
+    </section>
+
+    <!-- ============ 16 · THIS PRESENTATION ============ -->
+    <section class="slide" id="s-meta">
+      <div class="thing-tag">thing <b>0013</b></div>
+      <h1 class="slide-title">This presentation</h1>
+      <div class="content" id="meta-content">
+        <div class="paper"><pre># Build Ten Thousand Things — slide list
+
+Please build a HTML slides presentation based on this outline, which advances on
+pressing space or forward arrow, and goes back on pressing back arrow. (If you
+already have a skill for HTML slides, just do that) Each slide spells out what&#x27;s
+in it, but for a general theme, almost all slides will be a title (as label) and
+a picture or text artifact from the project; NO BULLET POINTS. &quot;Comment&quot; labels
+are a reminder to myself of what I want to say about each, do not include them
+in the presentation slides, but you can use them for context when building
+slides.
+
+To repeat - this is not a slideshow with bullet points. The text here will be
+slide titles and labels on diagrams or tables only. (Exceptions: the conlang and
+poetry sections have text-as-artifact and that&#x27;s fine, and the conlang section
+has subtitles.)
+
+You should ask me for each of the artifacts rather than trying to get or make
+them yourself; ask me for them project by project. A few of them will be
+diagrams that you can make yourself; I&#x27;ll either call that out here or tell you
+when you ask for them.
+
+Sections each correspond to one or more slides; the names in backticks after
+each section are repo names for the related projects, but looking at those
+should not be necessary for generating the slides. Some sections have multiple
+slides; most often this is a slide for what we made + a slide for how we did it.
+If I don&#x27;t put &quot;second slide&quot; or the like, then it should just be one slide.
+
+XCXC means I haven&#x27;t filled it out yet and you should ask me about it.
+
+---
+
+## Title Slide
+- Title: Build ten thousand things (in five minutes)
+- Author: Patrick Thill S1 &#x27;26
+- Comment: My goal this summer was to vibe code more and see how far I can push
+  this new capability; here are some of the things I asked to have made for me.
+
+## Setup and examples — `deflate-rust`, `dodo`, `satsolver`
+- Title: Setup, examples, and tests
+- Artifact: A screenshot of AGENTS.md saying &quot;**Agents must never write or
+  modify the interpreter implementation code.** The entire point of this project
+  is for Patrick to learn by implementing it himself.&quot;, over three screenshots
+  (of the three repositories) showing the scaffolding the agent built
+- Comments: At the start, I just used it to take care of annoying things I
+  didn&#x27;t want to do. For example, when I was writing a programming language to
+  apply for RC, I had it generate example programs to test the compiler.
+
+## A Board Game - `babel`
+- Title: A Board Game
+- Artifact: Some screenshots from development, spread out in whatever
+  arrangement seems pleasant to you. Perhaps screenshots of the design guide,
+  the guide to historical figures, the tower room cutout SVGs, or the AI-written
+  rules.
+- Comments: I used it to handle a bunch of annoying tasks around a board game
+  I&#x27;m designing - writing a style guide, autogenerating placeholder art, writing
+  a rulebook based on my stream of conciousness ramblings, doing historical
+  research, and generating SVGs that fit with the printer&#x27;s specifications. But
+  I was still controlling most of the process, so during RC I tried to give up
+  control more and more.
+
+## Terrain Builder - `live-dangerously`
+- Title: A sandbox for themselves, and a map generator
+- Artifact: A screenshot of the map generator
+- Comments: With Amanda Hinton, it built a sandbox on a VPS so we could run it
+  with dangerously-ignore-permissions, and then we built a map generator (based
+  on a climate modeling paper we found) autonomously in that sandbox. Turns out
+  this is mostly worse than just using the hosted code agents tho.
+
+## A Cooperative Game For Robots — `just-one-bot`
+- Title: &quot;A Cooperative Game For Robots&quot;
+- Artifact: ask me for a screenshot of the interface
+- Comments: Also with Amanda, made games where llms could cooperate with each
+  other. Turns out they&#x27;re not that creative, and we tried different prompting
+  strategies to get them to play differently from each other.
+
+## Negotiation Game - `llm-game`
+- Title: &quot;A Conversation Game&quot;
+- Artifact: A screenshot from the game
+- Comment: It built a game with the world&#x27;s most boring premise, where you play
+  a diplomat negotiating a water-use agreement and have to get it signed by
+  talking to NPCs backed by AI agents. This reuses a component built for the
+  just-one game, that lets you use your own LLM to back the NPCs (without using
+  my token budget).
+
+## GBA Pictionary — `gba-pictionary`
+- Title: &quot;A convolution net on the GBA&quot;
+- Artifact: A video of the game, playing within a frame that looks like a
+  gameboy advance (ask me for the video, draw the GBA yourself)
+- Comments: I was curious if you could fit a modern neural net on a GBA
+  cartridge, and so claude put it on one - in this case, to judge this
+  pictionary game.
+
+## Rhythm game — `rhythm-game`
+- Title: &quot;A rhythm game for the rcade&quot;
+- Artifact: A video of me playing it on the rcade.
+- I had it build a rhythm game for the rcade. You can try playing it, or add
+  songs to it by making a PR!
+
+## California HSR - `transit-fantasy`
+- Title: &quot;HSR for California&quot;
+- Artifact: A screenshot of the site, showing the main lines and travel times
+- Comment: We&#x27;re never going to get HSR in California, but I got fantasy HSR in
+  like a day.
+
+## Two-language poem - `bilingual-poem`
+- Title: &quot;A poem in two languages&quot;
+- Artifact: Fit in one side, the english translation of the indonesian poem, the
+  indonesian poem, the latinized pronunciation of the farsi poem, the farsi
+  poem, and the english translation of the farsi poem, side by side and
+  line-aligned in that order
+- Comments: I had it write a poem in two languages. That is, it made a
+  grammatically correct but kinda nonsense poem in Indonesian, and a similar
+  poem in Farsi, and these poems are pronounced the same - they use the same
+  sequence of phonemes when read aloud.
+
+Second slide:
+- Title: none
+- Artifact: A box and arrow diagram. First block is labeled &quot;Phoible&quot; and the
+  arrow out is labeled &quot;Farsi + Indonesian&quot;. Another block is labeled &quot;Online
+  Dictionaries&quot;. Both of these point to a block labeled &quot;Beam search&quot;; from
+  that, an arrow labelled &quot;1700 candidate lines&quot; points to a box labelled &quot;LLM
+  judges&quot;. From there, an arrow labelled &quot;38 candidate lines&quot; points to a box
+  labelled &quot;Composition&quot;.
+- Comments: We chose Farsi and Indonesian based on Phoible - a public dataset of
+  the sounds used by all the world&#x27;s languages - and finding that they were very
+  similar for being non-related languages. I don&#x27;t speak either!
+
+## interlang — `interlang`
+- Title: &quot;An international auxiliary language&quot;
+- Artifact: Article one of the universal declaration on human rights, translated
+  into the language. Stylize it somehow to make it look nice.
+- Special: All slides in this section should have the script, in english, as
+  subtitles that advance when you hit the button for next slide; this is as
+  translation since I&#x27;ll be presenting this section in the language itself.
+
+Second slide:
+- Title: &quot;Phonology &amp; phonotactics&quot;
+- Diagram: consonant and vowel tables, with a note that syllables are (C)V(N)
+
+Third slide:
+- Title: &quot;Grammar&quot;
+- Artifact: example sentences with glosses; grammar similarity chart
+
+Fourth slide:
+- Title: Lexicon
+- Artifact: sample vocabulary with sources; 55 language families, no family
+  gives more than 3 roots
+
+## This presentation
+- Title: &quot;This presentation&quot;
+- Artifact: An image of this markdown prompt (perhaps as multiple pages side by
+  side)
+- Comments: Finally, of course, AI made this slide deck. You may have already
+  guessed as much.
+
+## Reflection
+- Title: &quot;I, for one, welcome our new robot overlords&quot;
+- Artifact: The closest thing we have to bullet points. Make a table with two
+  columns and no column labels, and the following rows:
+  - Learning support | three heart emojis
+  - Handling annoying routine tasks | two thumbs up emojis
+  - Rote coding, advanced algorithms | three rocket ship emojis
+  - Creativity, unguided art, taste | four poop emojis
+  - Creative work guided by a detailed spec | detective emoji, magnifying glass
+    emoji, face with a monocle emoji
+  - Trying out a wild idea you would never have done before | priceless
+</pre></div>
+      </div>
+    </section>
+
+    <!-- ============ 17 · REFLECTION ============ -->
+    <section class="slide" id="s-reflect">
+      <h1 class="slide-title">I, for one, welcome our new robot overlords</h1>
+      <div class="content" id="reflect-content">
+        <table class="verdict">
+          <tbody>
+            <tr><td>Learning support</td><td class="v">&#x2764;&#xFE0F;&#x2764;&#xFE0F;&#x2764;&#xFE0F;</td></tr>
+            <tr><td>Handling annoying routine tasks</td><td class="v">&#x1F44D;&#x1F44D;</td></tr>
+            <tr><td>Rote coding, advanced algorithms</td><td class="v">&#x1F680;&#x1F680;&#x1F680;</td></tr>
+            <tr><td>Creativity, unguided art, taste</td><td class="v">&#x1F4A9;&#x1F4A9;&#x1F4A9;&#x1F4A9;</td></tr>
+            <tr><td>Creative work guided by a detailed spec</td><td class="v">&#x1F575;&#xFE0F;&#x1F50D;&#x1F9D0;</td></tr>
+            <tr><td>Trying out a wild idea you would never have done before</td><td class="v priceless">priceless</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <div id="subtitle-bar"></div>
+  </div>
+</div>
+
+<script>
+  // ---- stage scaling ----
+  function fit() {
+    const s = Math.min(innerWidth / 1280, innerHeight / 720);
+    document.getElementById('stage').style.transform = `scale(${s})`;
+  }
+  addEventListener('resize', fit); fit();
+
+  // ---- tally wall on title slide ----
+  (function () {
+    const el = document.getElementById('tally');
+    // groups of five tally marks; enough to overflow the stage
+    el.textContent = ('𝍸 ').repeat(900);
+  })();
+
+  // ---- navigation with subtitle steps ----
+  const slides = [...document.querySelectorAll('.slide')];
+  const subBar = document.getElementById('subtitle-bar');
+  let idx = 0, sub = 0;
+
+  function subsFor(i) {
+    const d = slides[i].dataset.subtitles;
+    return d ? JSON.parse(d) : null;
+  }
+  function render() {
+    slides.forEach((s, j) => s.classList.toggle('active', j === idx));
+    const subs = subsFor(idx);
+    const text = subs ? subs[sub] : '';
+    subBar.style.display = text ? 'block' : 'none';
+    subBar.textContent = text || '';
+    document.querySelectorAll('video').forEach(v => {
+      if (v.closest('.slide').classList.contains('active')) { v.play?.().catch(()=>{}); }
+      else { v.pause?.(); }
+    });
+  }
+  function forward() {
+    const subs = subsFor(idx);
+    if (subs && sub < subs.length - 1) { sub++; }
+    else if (idx < slides.length - 1) { idx++; sub = 0; }
+    render();
+  }
+  function back() {
+    const subs = subsFor(idx);
+    if (subs && sub > 0) { sub--; }
+    else if (idx > 0) {
+      idx--;
+      const prev = subsFor(idx);
+      sub = prev ? prev.length - 1 : 0;
+    }
+    render();
+  }
+  addEventListener('keydown', e => {
+    if (e.key === ' ' || e.key === 'ArrowRight' || e.key === 'PageDown') { e.preventDefault(); forward(); }
+    else if (e.key === 'ArrowLeft' || e.key === 'PageUp') { e.preventDefault(); back(); }
+  });
+  render();
+</script>
+
+</body>
+</html>
