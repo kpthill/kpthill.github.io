@@ -1,4 +1,0 @@
-[submodule "dodo"]
-	path = dodo
-	url = https://github.com/kpthill/dodo
-	branch = main

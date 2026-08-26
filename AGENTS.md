@@ -17,11 +17,29 @@ _posts/       published posts (YYYY-MM-DD-title.md)
 _drafts/      unpublished posts (no date in filename)
 _layouts/     HTML templates: default, home, page, post
 _includes/    partials (header, footer, social links, etc.)
+_data/projects.yml  drives the /projects/ card grid
+projects.html       the projects page (renders _data/projects.yml)
 _config.yml   site-wide settings; also controls Jekyll exclude/include
-assets/       main.scss — overrides minima gem to suppress Sass deprecation warnings
+assets/       main.scss (minima overrides, project-card grid, header dropdown)
+              images/projects/ — screenshots for the projects page
 about.markdown  about page; has last_modified_at: in front matter
-dodo/         git submodule pointing at github.com/kpthill/dodo
+build-ten-thousand-things/  RC end-of-batch talk + poem.html, static export
+                            served verbatim (files have no front matter)
 ```
+
+## Header nav
+
+`_includes/header.html` overrides minima's header with an explicit dropdown
+(About, Projects, and RC webring links). It does NOT auto-list pages, on
+purpose: GitHub Pages' default plugins (`jekyll-optional-front-matter`,
+`jekyll-titles-from-headings`) turn stray markdown files into pages, which
+minima's auto-nav would then display. The webring links render only when
+`recurse_webring_id` is set in `_config.yml`.
+
+## Adding a project to /projects/
+
+Add an entry to `_data/projects.yml` and a screenshot (~900px wide) under
+`assets/images/projects/`. Cards crop images to a 3:2 top-aligned box.
 
 ## Writing a post
 
@@ -39,49 +57,45 @@ MathJax is loaded in `_layouts/post.html`, so LaTeX works with `$$ ... $$`.
 
 Drafts go in `_drafts/` with no date in the filename; they only appear when serving with `--drafts`.
 
-## Incorporating projects from other repos
+## Hosting projects (the standard pattern)
 
-Use a **git submodule** pointing at the project's GitHub repo. GitHub Pages supports submodules natively.
+Every JS/web project is hosted from **its own repo** with a GitHub Actions →
+GitHub Pages workflow, which serves it at `thill.me/<repo-name>/` (project
+sites appear as subpaths of this user site, and they take precedence over
+same-named paths here). Current examples: `dodo`, `live-dangerously`,
+`voronoi-game`, `transit-fantasy`, `rhythm-game`, `just-one-bot`, `llm-game`.
 
-Because submodules pull in the entire repo, use Jekyll's `exclude` in `_config.yml` to block files you don't want served. **Use a blacklist (not a whitelist):** GitHub Pages runs Jekyll 3.9.x, where `include:` only overrides default exclusions (dotfiles, underscore dirs) and does NOT override an explicit `exclude:` entry. A whitelist works locally on Jekyll 4.x but silently breaks on GitHub Pages.
+To host a new project:
 
-```yaml
-exclude:
-  - some-project/notes_to_self.md   # block specific private files
-  - some-project/todo.md
-  - some-project/impl               # block whole directories
-```
+1. In the project repo: make sure the build works from a subdirectory
+   (for Vite, set `base: './'`; avoid root-absolute asset paths like
+   `/audio/x.mp3` in code). Add a `pages.yml` workflow — copy one from
+   `just-one-bot` (plain Vite app), `rhythm-game` (wrapper page + build
+   under `game/`), or `dodo` (no build; stages a whitelist of files,
+   manual-trigger only).
+2. Enable Pages once: `gh api repos/kpthill/<repo>/pages -X POST -f build_type=workflow`
+   (the workflow's GITHUB_TOKEN cannot do this itself).
+3. Add the project to `_data/projects.yml` here with a screenshot.
 
-**Tradeoff:** any new file added to the submodule repo will be served publicly by default. When adding files to a submodule, check whether they need to be added to the blacklist in `_config.yml`.
-
-Check that any HTML files being served are self-contained or that all their JS/asset dependencies are also reachable.
-
-To update a submodule to its latest commit:
-```bash
-cd some-project && git pull && cd .. && git add some-project && git commit
-```
+Two exceptions live inside this repo instead: the dodo *blog post* (links to
+the project site) and `build-ten-thousand-things/` (a finished static talk
+export, not an evolving app — served verbatim from this repo).
 
 ## Deploying dodo updates
 
-The dodo pages (`/dodo/repl.html`, `/dodo/spec.html`) load the interpreter (`dodo/impl/*.js`) and
-the spec (`dodo/dodo-spec.md`) **live at runtime** — there are no embedded copies to re-sync. So
-after any change to the dodo language, deploying is exactly one step in this repo:
+The dodo pages (`/dodo/repl.html`, `/dodo/spec.html`) are served by the dodo
+repo's own Pages site, NOT this repo. Its workflow publishes a **whitelist**
+(repl.html, spec.html, repl-shims.js, impl/*.js, dodo-spec.md), so new files
+in the dodo repo stay private unless added to the staging step in
+`dodo/.github/workflows/pages.yml`.
 
-```bash
-git submodule update --remote dodo && git add dodo && git commit -m "bump dodo" && git push
-```
+Deploys stay **manual by design**: push to dodo `main`, then trigger the
+workflow (`gh workflow run pages.yml -R kpthill/dodo`, or the Actions tab).
+Nothing in this blog repo needs to change for a dodo update.
 
-Notes:
-
-- **Pushing `master` here is what deploys.** Pushing the dodo repo alone changes nothing on the
-  live site — GitHub Pages builds from the submodule commit pinned in this repo. (`.gitmodules`
-  sets `branch = main` so `--remote` tracks dodo's `main`.)
-- There is deliberately **no CI/Action** auto-bumping the submodule; deploys are manual and
-  on-purpose.
-- `dodo/impl` and `dodo/dodo-spec.md` are intentionally *not* in the `_config.yml` exclude list —
-  the pages 404 without them. `dodo/repl-shims.js` (top level) must also stay served.
-- The dodo pages don't work from `file://`; preview via `bundle exec jekyll serve` (or
-  `python3 -m http.server` inside the dodo repo). Config changes need a jekyll serve restart.
+The rcade games (`rhythm-game`) get a browser-playable demo via
+`web/index.html` in their repo — a game-agnostic port of the cabinet's input
+plugins (same key map as `rcade dev`). Reuse it for future rcade games.
 
 ## Git history and authorship
 
