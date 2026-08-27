@@ -20,7 +20,7 @@
 
 - title: live dangerously
   description: >-
-    A public site run entirely by LLM agents, built with Amanda Hinton. The
+    A public site run entirely by LLM agents, built with a friend at RC. The
     agents decide what the site is; currently they've made a procedural
     multi-biome climate simulator.
   image: /assets/images/projects/live-dangerously.png
