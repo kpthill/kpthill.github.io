@@ -8,4 +8,9 @@
   {%- if jekyll.environment == 'production' and site.google_analytics -%}
     {%- include google-analytics.html -%}
   {%- endif -%}
+  {%- if site.recurse_webring_id %}
+  <!-- Rewrites the RC webring prev/next links in the header menu to direct
+       site URLs; required by https://ring.recurse.com/ membership. -->
+  <script src="https://raw.githack.com/Qwuke/recurse-ring/main/static/ring.js" type="text/javascript"></script>
+  {%- endif %}
 </head>

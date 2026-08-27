@@ -20,11 +20,13 @@
             <a class="page-link" href="{{ "/about/" | relative_url }}">About</a>
             <a class="page-link" href="{{ "/projects/" | relative_url }}">Projects</a>
             {%- if site.recurse_webring_id %}
+            {%- comment %} The rc-ring-* anchor ids are required by the
+                webring's ring.js; keep them intact. {% endcomment %}
             <div class="menu-separator"></div>
-            <span class="menu-note">recurse center webring</span>
-            <a class="page-link" href="https://ring.recurse.com/prev?id={{ site.recurse_webring_id }}">&larr; previous site</a>
-            <a class="page-link" href="https://ring.recurse.com/rand">random recurser</a>
-            <a class="page-link" href="https://ring.recurse.com/next?id={{ site.recurse_webring_id }}">next site &rarr;</a>
+            <a class="page-link" id="rc-ring-home" data-rc-uuid="{{ site.recurse_webring_uuid }}" href="https://ring.recurse.com/">the recurse webring</a>
+            <a class="page-link" id="rc-ring-prev" href="https://ring.recurse.com/prev?id={{ site.recurse_webring_id }}">&larr; previous site</a>
+            <a class="page-link" id="rc-ring-rand" href="https://ring.recurse.com/rand">random recurser</a>
+            <a class="page-link" id="rc-ring-next" href="https://ring.recurse.com/next?id={{ site.recurse_webring_id }}">next site &rarr;</a>
             {%- endif %}
           </div>
         </div>
