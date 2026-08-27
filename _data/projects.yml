@@ -6,9 +6,8 @@
 
 - title: dodo
   description: >-
-    A little Lisp with JavaScript-flavored literals and a recursive match
-    statement, implemented with hand-rolled parser combinators. Try it in the
-    in-browser REPL.
+    A small Lisp interpreted in javascript, implemented with hand-rolled parser
+    combinators.
   image: /assets/images/projects/dodo.png
   demo: /dodo/repl.html
   source: https://github.com/kpthill/dodo
@@ -18,52 +17,46 @@
     - label: blog post
       url: /2026/06/02/dodo.html
 
-- title: live dangerously
+- title: climate simulation
   description: >-
-    A public site run entirely by LLM agents, built with a friend at RC. The
-    agents decide what the site is; currently they've made a procedural
-    multi-biome climate simulator.
+    A procedural fantasy world map generator with climate modeling. Built with a
+    friend as a vibe-coding experiment - it was built over a few hours without
+    supervision.
   image: /assets/images/projects/live-dangerously.png
   demo: /live-dangerously/
   source: https://github.com/kpthill/live-dangerously
 
 - title: build ten thousand things
   description: >-
-    A five-minute talk on a summer of building at the Recurse Center — and on
-    what AI tooling does to the economics of making small things.
+    A talk I gave at RC about building with LLMs.
   image: /assets/images/projects/build-ten-thousand-things.png
   demo: /build-ten-thousand-things/
 
 - title: tanah, tanah, rumah
   description: >-
-    One stream of sound, two poems: an Indonesian ear hears one poem, a
-    Persian ear another. Composed by lattice search over pronunciation
-    lexicons.
+    Two poems, one in indonesian and one in persian, that have (almost) the same
+    pronunciation.
   image: /assets/images/projects/poem.png
   demo: /build-ten-thousand-things/poem.html
   source: https://github.com/kpthill/bilingual-poem
 
 - title: voronoi game
   description: >-
-    A territory-claiming game against an AI opponent: each point you place
-    owns the region of the board closest to it.
+    A territory-claiming game with an AI opponent.
   image: /assets/images/projects/voronoi-game.png
   demo: /voronoi-game/
   source: https://github.com/kpthill/voronoi-game
 
 - title: CA fantasy transit
   description: >-
-    California's rail network after 50 imaginary years of investment, with
-    travel-time comparisons against driving.
+    Claude built us a hierarchical high speed rail network.
   image: /assets/images/projects/transit-fantasy.jpg
   demo: /transit-fantasy/
   source: https://github.com/kpthill/transit-fantasy
 
-- title: DJ — a turntable rhythm game
+- title: A rhythm game for the RCade
   description: >-
-    A two-lane turntable rhythm game built for RCade, the arcade cabinet at
-    the Recurse Center, playable here through a browser port of the cabinet's
-    controls.
+    A rhythm game for the [RCade](https://rcade.dev/).
   image: /assets/images/projects/rhythm-game.png
   demo: /rhythm-game/
   source: https://github.com/kpthill/rhythm-game
@@ -71,18 +64,15 @@
 
 - title: just one bot
   description: >-
-    The cooperative word game Just One, played by a table of seven LLMs while
-    you watch — with live per-player reasoning panels and editable prompts.
+    Robots playing a cooperative word game.
   image: /assets/images/projects/just-one-bot.png
   demo: /just-one-bot/
   source: https://github.com/kpthill/just-one-bot
   demo_note: "bring your own API key, or run a local model in-browser"
 
-- title: the kessari accord
+- title: A diplomacy game.
   description: >-
-    A conversation-only diplomacy RPG: two days to talk an engineer, a
-    survivor, and your own doubts into an agreement, with LLMs playing every
-    character and the hidden judge.
+    A conversation-only diplomacy RPG powered by LLMs.
   image: /assets/images/projects/llm-game.png
   demo: /llm-game/
   source: https://github.com/kpthill/llm-game
