@@ -14,7 +14,7 @@ permalink: /projects/
     </a>
     <div class="project-card-body">
       <h3><a href="{{ project.demo | relative_url }}">{{ project.title }}</a></h3>
-      <p>{{ project.description }}</p>
+      {{ project.description | markdownify }}
       {%- if project.demo_note %}
       <p class="project-demo-note">{{ project.demo_note }}</p>
       {%- endif %}
