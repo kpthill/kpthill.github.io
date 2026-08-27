@@ -28,7 +28,14 @@ layout: default
       {%- endfor -%}
     </ul>
 
-    <p class="rss-subscribe">subscribe <a href="{{ "/feed.xml" | relative_url }}">via RSS</a></p>
+    {%- comment %} The rc-ring-* anchor ids are required by the webring's
+        ring.js; keep them intact. {% endcomment %}
+    <p class="rss-subscribe"><a href="{{ "/feed.xml" | relative_url }}">RSS</a>
+      {%- if site.recurse_webring_id %} &middot;
+      <a id="rc-ring-prev" title="previous site" href="https://ring.recurse.com/prev?id={{ site.recurse_webring_id }}">&larr;</a>
+      <a id="rc-ring-home" data-rc-uuid="{{ site.recurse_webring_uuid }}" href="https://ring.recurse.com/">RC webring</a>
+      <a id="rc-ring-next" title="next site" href="https://ring.recurse.com/next?id={{ site.recurse_webring_id }}">&rarr;</a>
+      {%- endif %}</p>
   {%- endif -%}
 
 </div>
