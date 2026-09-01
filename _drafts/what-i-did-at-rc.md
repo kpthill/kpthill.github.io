@@ -16,7 +16,7 @@ Agentic adventures is a discussion group for people interested in modern LLMs an
 
 - @amanda hinton and I built a remote sandbox for a vibecoding agent that we could run with dangerously-allow-permissions.
 - In the same vein, @michelle bernstein taught us how to set up a sandboxed environment for local agents using ollama and docker.
-- This was what we built the [just one game](XCXC) for, to investigate how agents can cooperate.
+- This was what we built the [just one game](https://thill.me/just-one-bot/) for, to investigate how agents can cooperate.
 - We played around with minigpt together, building a small text predictor  model trained on romeo and juliet to talk like shakespeare.
 - We did a basic LoRA to train a small model to talk more conversationally.
 
@@ -28,17 +28,19 @@ This was a study group working through the (first half of the) book Practical De
 
 In a coffee chat with @Sophia Wood, we discovered a shared passion for math and decided to start a discussion group for mathematical topics. This was meant to be a fun distraction and chance to learn and explore, so we would spend maybe the first half of each meeting on learning and then split into pairs to build things based on what we learned. Some fun things we worked on were:
 
-- Working through [project euler](XCXC) problems together.
-- Thinking our way through some problems from Peter Winkler's book [Mathematical Puzzles](XCXC).
+- Working through [project euler](https://projecteuler.net/) problems together.
+- Thinking our way through some problems from Peter Winkler's book [Mathematical Puzzles](https://math.dartmouth.edu/news-resources/electronic/puzzlebook/book/book.pdf).
 - Drawing fractals and other generative art.
-- Building programs using voronoi diagrams, such as [this game](XCXC).
+- Building programs using voronoi diagrams, such as [this game](https://thill.me/voronoi-game/).
 - @Ben Kallus gave us an introduction to the rocq proof assistant, and we worked our way through some boolean identities
 - We wrote a program to generate hilbert curves for drawing with the pen plotter.
-- @kenji and I built some [fun extensions](XCXC desmos link) of the [chaos game](XCXC wikipedia link) in desmos.
+- @kenji and I built some fun extensions of the [chaos game](https://en.wikipedia.org/wiki/Chaos_game) in desmos.
+
+XCXC screenshot of the desmos chaos game extensions
 
 ##### RFTG bot investigation
 
-@xcxc_someone started a short sequence to dig into the code of the [keldon](XCXC) AI for playing the board game [Race for the Galaxy](XCXC). We spent the first session just learning the rules and playing the AI, then dug into the code - an old school two-layer neural network with curated features. Claude was pretty good at interpreting the weights of the neural network and explaining what it reacted to; we had a time trying to understand what it meant about strategy. Takeaway was that econ strategies are much stronger than military in the base game (coinciding with player sentiment). One of the things that stood out to me was how many of the strongest weighted nodes corresponded to the presence of individual cards.
+@xcxc_someone started a short sequence to dig into the code of the [keldon](http://keldon.net/rftg/) AI for playing the board game [Race for the Galaxy](https://en.wikipedia.org/wiki/Race_for_the_Galaxy). We spent the first session just learning the rules and playing the AI, then dug into the code - an old school two-layer neural network with curated features. Claude was pretty good at interpreting the weights of the neural network and explaining what it reacted to; we had a time trying to understand what it meant about strategy. Takeaway was that econ strategies are much stronger than military in the base game (coinciding with player sentiment). One of the things that stood out to me was how many of the strongest weighted nodes corresponded to the presence of individual cards.
 
 #### Finished up dodo
 
@@ -46,7 +48,7 @@ I wrapped up the mini language, [dodo](https://thill.me/2026/06/02/dodo.html), t
 
 #### Implement DEFLATE
 
-One common thing at RC is people giving talks on their work. One I attended early in batch was a talk that @JoshWolfe gave about the ZIP file format, and his investigations about inconsistencies between implementations, diving deep into details that I'd never thought about before. If the unzipper that your virus scanner uses handles edge cases slightly differently that the unzipper that you use, it might see a file with malware in it as innocent, because it doesn't unzip the virus. This is a security vulnerability!
+One common thing at RC is people giving talks on their work. One I attended early in batch was a talk that @JoshWolfe gave about the ZIP file format, and his investigations about inconsistencies between implementations, diving deep into details that I'd never thought about before. If the unzipper that your virus scanner uses handles edge cases slightly differently than the unzipper that you use, it might see a file with malware in it as innocent, because it doesn't unzip the virus. This is a security vulnerability!
 
 One part of the talk that caught my attention was the digression on the compression algorithm that zip uses, called DEFLATE. @KevanHollbach and I thought that reimplementing it sounded like a fun exercise, so we paired on it in a few sessions over the next few weeks.
 
@@ -56,17 +58,17 @@ We wrote a [decompressor](https://github.com/kpthill/deflate-rust), working stra
 
 #### Paired a lot
 
-RC emphasizes the value of pairing - working on problems with other people. I'm a bit introverted even by RC standards, but I still did a bunch of that. Implementing DEFLATE with Kevan was the biggest example of pairing, but I did some other stuff as well. So with [Zaki](https://github.com/zmughal) and [Tommy](https://tommymaranges.com) we used SAT solvers to solve sudoku - bringing heavyweight tools to a relatively straightforward problem. I implemented the game of life with @SeyoungKim, and we learned how to use the shell cursor to have it redraw itself neatly with each generation (or not neatly, if you get the command wrong). With @williamwest we implemented the game mastermind. With @billkusters we tried to make a new view for magit in emacs, which was honestly way too ambitious considering neither of us had written anything serious in emacs lisp before. But he did convince me to give doom emacs a try, and I've been enjoying it!
+RC emphasizes the value of pairing - working on problems with other people. I'm a bit introverted even by RC standards, but I still did a bunch of that. Implementing DEFLATE with Kevan was the biggest example of pairing, but I did some other stuff as well. So with [Zaki](https://github.com/zmughal) and [Tommy](https://tommymaranges.com) we [used SAT solvers to solve sudoku](https://thill.me/2026/07/16/corn-puzzle-sat-solver.html) - bringing heavyweight tools to a relatively straightforward problem. I implemented the game of life with @SeyoungKim, and we learned how to use the shell cursor to have it redraw itself neatly with each generation (or not neatly, if you get the command wrong). With @williamwest we implemented the game mastermind. With @billkusters we tried to make a new view for magit in emacs, which was honestly way too ambitious considering neither of us had written anything serious in emacs lisp before. But he did convince me to give doom emacs a try, and I've been enjoying it!
 
 #### Vibecoded a bunch of mini projects
 
 My goal coming into RC was to get the hang of them newfangled LLM things that all the kids are raving about. That's obviously part of the motivation for my participation in Agentic Adventures and Practical Deep Learning, but I also spent a bunch of time just vibecoding random things and trying to push the limits of what I could tackle.
 
-One of them was a [rhythm game](XCXC playable link) for the [rcade](XCXC); this was the first one where I really leveraged LLM capabilities, since I had it make ten different prototypes and chose the one I liked the best.
+One of them was a [rhythm game](https://thill.me/rhythm-game/) for the [rcade](https://rcade.dev/); this was the first one where I really leveraged LLM capabilities, since I had it make ten different prototypes and chose the one I liked the best.
 
 XCXC screenshot of the rhythm game.
 
-@amanda hinton and I experimented with how large of tasks we could leave an agent to do on its own; the result of that was a [fantasy map generator](XCXC) implementing climate modeling based on an academic [paper](XCXC find and link the paper).
+@amanda hinton and I experimented with how large of tasks we could leave an agent to do on its own; the result of that was a [fantasy map generator](https://thill.me/live-dangerously/) implementing climate modeling based on an academic [paper](https://doi.org/10.1007/s00371-020-01920-7).
 
 XCXC screenshot of a map (not the default map since it's kind of ugly)
 
@@ -76,7 +78,7 @@ XCXC screenshot of just one, with some dropdowns and reasoning visible.
 
 The goal of the game is to give hints to a secret word without giving the same hint as another player; it was shocking how often all the agents playing would give the same hint, even at temperature 1. We resolved this by giving them all "personalities" which were really just topics; for example we'd be telling one agent to think about things in the context of sports, so their clue for "shell" might be "defense" or something, whereas the agent told to be a hippy might say "cancer" for the zodiac.
 
-In the same vein, I tried building a [diplomacy game](XCXC) where you can interact with agents as the main gameplay mechanic; unfortunately the main learning was that telling agents to "hold out on helping the player until they give you what you want" means that you get really stiff and combative characters. There's probably some secrets of character building and prompting that could have made this work, but I didn't find them.
+In the same vein, I tried building a [diplomacy game](https://thill.me/llm-game/) where you can interact with agents as the main gameplay mechanic; unfortunately the main learning was that telling agents to "hold out on helping the player until they give you what you want" means that you get really stiff and combative characters. There's probably some secrets of character building and prompting that could have made this work, but I didn't find them.
 
 Since both of these are browser games and I didn't want to spend my own tokens when people try them out, I also vibecoded a component that would let people use their own access keys or their own GPU (through WebLLM), which is what made those shareable!
 
@@ -86,13 +88,13 @@ XCXC llm-supervisor screenshot
 
 Likewise, I had Claude build a bunch of improvements to this site and set things up so I could write this for you.
 
-Later in the summer I got interested in trying to use these tools in a domain I was unfamiliar with, to answer questions I wasn't sure I could answer within my skill set. I was curious about how much overlap there could be between different languages' words, and vibecoded a tree search to find sequences of words in two languages, which had the same (or closely similar) pronunciations. This turns out to be very hard even for languages with similar phonologies (we used Indonesian and Farsi, based on their similar sound inventories according to PHOIBLE) but we did end up with a very mediocre poem, which you can see [here](XCXC).
+Later in the summer I got interested in trying to use these tools in a domain I was unfamiliar with, to answer questions I wasn't sure I could answer within my skill set. I was curious about how much overlap there could be between different languages' words, and vibecoded a tree search to find sequences of words in two languages, which had the same (or closely similar) pronunciations. This turns out to be very hard even for languages with similar phonologies (we used Indonesian and Farsi, based on their similar sound inventories according to PHOIBLE) but we did end up with a very mediocre poem, which you can see [here](https://thill.me/build-ten-thousand-things/poem.html).
 
-Building on what I learned there, I then tried to vibe-code a new constructed language. This was inspired by conlang critic's [video on Esperanto](XCXC). Esperanto isn't as simple as you might prefer an international auxiliary language to be, and its vocabulary is notably eurocentric - which Zamenhof can hardly be blamed for, since he was making one of the first ones, but nevertheless I wondered if we could do better given all the information on the internet that we have available.
+Building on what I learned there, I then tried to vibe-code a new constructed language. This was inspired by conlang critic's [video on Esperanto](https://www.youtube.com/watch?v=Sao9mCLy3Xo). Esperanto isn't as simple as you might prefer an international auxiliary language to be, and its vocabulary is notably eurocentric - which Zamenhof can hardly be blamed for, since he was making one of the first ones, but nevertheless I wondered if we could do better given all the information on the internet that we have available.
 
 I probably owe a full post on this at some point (though if I start a new job, good luck on ever seeing that) but I'll give the nutshell version here: First, we used PHOIBLE data to put together a set of sounds that are common across languages, including recommended allophones to ensure that words remain producible and distinguishable for people with all sorts of native languages. Then we built a grammar piece by piece, following a guide that real linguists use when describing the grammar of natural languages (XCXC look up the name of the guide). One cool trick there was that we made decisions based on the evidence of existing creole and (especially) pidgin languages described in (XCXC name the data source we used). Those languages were a good guide to what people used to different grammar systems converged on, so it was likely that many people around the world would find it intuitive or at least understandable. (Bonus fun fact - when you do this, you kind of naturally end up with a grammar that looks a lot like chinese or vietnamese - analytic languages using function words rather than declension to convey grammatical information.) Finally we built the lexicon from a collection of dictionaries for various world languages. Root words that came from an international canon - ones already borrowed into a bunch of languages - simply got borrowed and transliterated. (e.g. words like "phonology" or "coffee" became "fonologia" and "kafe".) For other words, we wrote an optimizer to select words that are both widely recognizable (favoring widely spoken languages like English or Chinese) and words that are representative of many different language families, to avoid Eurocentrism. Full disclosure - this part didn't really work right and I had Claude fake it just enough to get a sample script for my presentation. If I ever do make the full post, fixing that will be the first step.
 
-At the end of the summer, I gave a talk about these projects, the slides for which are [here](XCXC). The slides were, of course, made by Claude.
+At the end of the summer, I gave a talk about these projects, the slides for which are [here](https://thill.me/build-ten-thousand-things/). The slides were, of course, made by Claude.
 
 #### Blogged a little?
 
@@ -124,7 +126,7 @@ There was a bunch of cool drawings to see that people had made with the pen plot
 
 xcxc pic of pen plot wall
 
-@Jagi made an awesome active decoration that would react and change it's pattern based on the noise around it.
+@Jagi made an awesome active decoration that would react and change its pattern based on the noise around it.
 
 xcxc pic of Jagi's thing
 
