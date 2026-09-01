@@ -14,7 +14,11 @@ Requires rbenv with Ruby 3.3+ and `bundle install`. Config changes require a ser
 
 ```
 _posts/       published posts (YYYY-MM-DD-title.md)
-_drafts/      unpublished posts (no date in filename)
+_drafts/      unpublished posts (no date in filename). Gitignored here and
+              tracked in its own PRIVATE repo (kpthill/blog-drafts) nested at
+              this path — drafts often name people who haven't yet given
+              permission to appear publicly, and this repo is public. Commit
+              draft changes inside _drafts/, not here.
 _layouts/     HTML templates: default, home, page, post
 _includes/    partials (header, footer, social links, etc.)
 _data/projects.yml  drives the /projects/ card grid
