@@ -12,5 +12,5 @@ the last summer in New York at [Recurse Center](recurse.com). I previously worke
 at Asana, Google and Lexity. I studied CS and mathematics at Stanford.
 
 This blog is a place for me to post about whatever technical or mathematical
-topics I get interested in, and hosts links to various demos or project I want
+topics I get interested in, and hosts links to various demos or projects I want
 to share.

@@ -28,8 +28,7 @@ layout: default
       {%- endfor -%}
     </ul>
 
-    {%- comment %} The rc-ring-* anchor ids are required by the webring's
-        ring.js; keep them intact. {% endcomment %}
+    {%- comment %} The rc-ring-* anchor ids are required by the webring's ring.js; keep them intact. {% endcomment %}
     <p class="rss-subscribe"><a href="{{ "/feed.xml" | relative_url }}">RSS</a>
       {%- if site.recurse_webring_id %} &middot;
       <a id="rc-ring-prev" title="previous site" href="https://ring.recurse.com/prev?id={{ site.recurse_webring_id }}">&larr;</a>
