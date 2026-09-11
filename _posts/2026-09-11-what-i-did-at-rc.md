@@ -4,7 +4,7 @@ title: "What I did at RC"
 tags: RC projects
 ---
 
-I've spent the summer at [Recurse Center](https://www.recurse.com/), a programming retreat in Brooklyn, at the recommendation of my friend Cory. These are some things I did there.
+I spent the summer at [Recurse Center](https://www.recurse.com/), a programming retreat in Brooklyn, at the recommendation of my friend Cory. These are some things I did there.
 
 #### Participated in study groups
 
